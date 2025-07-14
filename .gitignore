@@ -1,0 +1,4 @@
+# my individual files 
+/python-refresher
+.venv
+__pycache__/  
