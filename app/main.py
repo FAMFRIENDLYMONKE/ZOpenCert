@@ -5,9 +5,9 @@ from app.database import connect_to_mongo, close_mongo_connection
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    connect_to_mongo()
+    await connect_to_mongo()
     yield
-    close_mongo_connection()
+    await   close_mongo_connection()
 
 app = FastAPI(
     title="Badge & Certificate Issuer API",

@@ -8,8 +8,9 @@ class CertificateIssueRequest(BaseModel):
     issue_date: Optional[datetime] = None
 
 class CertificateResponse(BaseModel):
+    id: Optional[str] = None
     certificate_id: str
-    recipient: str
+    recipient_email: str
     issued_on: datetime
     blockchain_txid: Optional[str]
     certificate_json: Dict[str, Any]

@@ -3,7 +3,7 @@ import subprocess
 import json
 import uuid
 from datetime import datetime, timezone
-from app.database import certificate_collection
+from app.database import get_certificate_collection
 
 async def issue_certificate(request: CertificateIssueRequest) -> CertificateResponse:
     certificate_id = str(uuid.uuid4())
@@ -30,7 +30,7 @@ async def issue_certificate(request: CertificateIssueRequest) -> CertificateResp
     with open(f"./issued/{certificate_id}.json", "r") as f:
         cert_json = json.load(f)
 
-    await certificate_collection.insert_one(cert_json)
+    await get_certificate_collection().insert_one(cert_json)
 
     response = CertificateResponse(
         certificate_id=certificate_id,

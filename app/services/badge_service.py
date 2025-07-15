@@ -3,40 +3,58 @@ from app.schemas.badge_schema import BadgeIssueRequest, BadgeResponse
 import hashlib
 import uuid
 from datetime import datetime, timezone
-from app.database import badge_collection
+from app.database import get_badge_collection
+from typing import Optional
 
 async def issue_badge(request: BadgeIssueRequest) -> BadgeResponse:
-    salt = "8612807198" #generated using true random generator
-    recipient_hash = hashlib.sha256((request.recipient_email + salt).encode()).hexdigest()
+    badge_collection = get_badge_collection()
 
     badge_id = str(uuid.uuid4())
+    salt = "0527974201"
+    recipient_hash = hashlib.sha256((request.recipient_email + salt).encode()).hexdigest()
+
+    issued_on = datetime.now(timezone.utc)
 
     badge_json = {
         "@context": "https://w3id.org/openbadges/v2",
+        "id": f"http://zcertify.zairza.co.in/badges/{badge_id}",
         "type": "Assertion",
-        "id": f"https://zcertify.zairza.co.in/badges/{badge_id}",
         "recipient": {
             "type": "email",
-            "hashed": True,
             "salt": salt,
+            "hashed": True,
             "identity": recipient_hash
         },
-        "badge": request.badge_class_url,
+        "badge": str(request.badge_class_url),
         "verification": {
-            "type": "HostedBadge"
+            "type": "hosted"
         },
-        "issuedOn": datetime.now(timezone.utc)
+        "issuedOn": issued_on,
     }
 
     # signature = sign_data(badge_json)
     # badge_json["signature"] = signature
 
-    await badge_collection.insert_one(badge_json)
+    
+    db_data = {
+        "badge_id": badge_id,
+        "recipient_email_hash": recipient_hash,
+        "badge_class_url": str(request.badge_class_url),
+        "issued_on": issued_on,
+        "badge_json": badge_json
+    }
 
-    return BadgeResponse(**badge_json)
+    badge = await badge_collection.insert_one(db_data)
 
-async def verify_badge(badge_id: str) -> BadgeResponse:
-    badge = await badge_collection.find_one({"id": f"https://yourdomain.com/badges/{badge_id}"})
+    response_data = {
+        "id": badge.inserted_id,
+        **db_data
+    }
+    return BadgeResponse(**response_data)
+
+
+async def verify_badge(badge_id: str) -> Optional[BadgeResponse]:
+    badge = await get_badge_collection().find_one({"badge_id": badge_id})
 
     if not badge:
         return None
