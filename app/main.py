@@ -21,7 +21,7 @@ origins = [
     "http://localhost",
     "http://localhost:5173",  # React default port
     "http://localhost:8000",  # FastAPI default port
-    "http://zcertify.zairza.co.in",  # Your production domain
+    "https://zcertify.zairza.co.in",  # Your production domain
     # Add more origins as needed
 ]
 
