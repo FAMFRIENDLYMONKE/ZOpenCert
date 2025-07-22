@@ -33,12 +33,10 @@ async def issue_badge(request: BadgeIssueRequest) -> BadgeResponse:
     }
 
     # signature = sign_data(badge_json)
-    # badge_json["signature"] = signature
-
     
     db_data = {
         "badge_id": badge_id,
-        "recipient_email_hash": recipient_hash,
+        "recipient_name": request.recipient_name,
         "badge_class_url": str(request.badge_class_url),
         "issued_on": issued_on,
         "badge_json": badge_json

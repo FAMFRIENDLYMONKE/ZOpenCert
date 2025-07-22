@@ -4,6 +4,7 @@ from datetime import datetime
 
 class BadgeIssueRequest(BaseModel):
     recipient_email: EmailStr
+    recipient_name: str
     badge_class_url: HttpUrl
     
 
@@ -11,7 +12,7 @@ PyObjectId = Annotated[str, BeforeValidator(str)]
 class BadgeResponse(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
     badge_id: str
-    recipient_email_hash: str
+    recipient_name: str
     badge_class_url: str
     issued_on: datetime
     badge_json: Dict[str, Any]

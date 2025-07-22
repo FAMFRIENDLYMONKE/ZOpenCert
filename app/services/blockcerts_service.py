@@ -34,7 +34,7 @@ async def issue_certificate(request: CertificateIssueRequest) -> CertificateResp
 
     response = CertificateResponse(
         certificate_id=certificate_id,
-        recipient=request.recipient_email,
+        recipient_email=request.recipient_email,
         issued_on=datetime.now(timezone.utc),
         blockchain_txid=cert_json.get("signature", {}).get("anchors", [{}])[0].get("sourceId"),
         certificate_json=cert_json
@@ -50,7 +50,7 @@ async def verify_certificate(certificate_json: dict) -> CertificateResponse:
 
     response = CertificateResponse(
         certificate_id=certificate_json.get("id"),
-        recipient=certificate_json.get("recipient", {}).get("identity"),
+        recipient_email=certificate_json.get("recipient", {}).get("identity"),
         issued_on=certificate_json.get("issuedOn"),
         blockchain_txid=blockchain_txid,
         certificate_json=certificate_json
