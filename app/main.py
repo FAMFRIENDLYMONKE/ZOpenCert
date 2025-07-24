@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.routers import badges, certificates
 from app.database import connect_to_mongo, close_mongo_connection
+from app.auth.auth_handler import get_api_key
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

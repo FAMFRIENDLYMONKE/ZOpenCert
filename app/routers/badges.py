@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from app.auth.auth_handler import get_api_key
 from app.schemas.badge_schema import BadgeIssueRequest, BadgeResponse
 from app.services.badge_service import issue_badge, verify_badge
 
@@ -7,7 +8,7 @@ router = APIRouter(
     tags=["Badges"]
 )
 
-@router.post("/issue", response_model=BadgeResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/issue", response_model=BadgeResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(get_api_key)])
 async def issue_badge_route(request: BadgeIssueRequest):
     try:
         badge = await issue_badge(request)
