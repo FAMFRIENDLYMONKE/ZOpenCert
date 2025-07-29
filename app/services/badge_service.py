@@ -17,7 +17,7 @@ async def issue_badge(request: BadgeIssueRequest) -> BadgeResponse:
 
     badge_json = {
         "@context": "https://w3id.org/openbadges/v2",
-        "id": f"http://zcertify.zairza.co.in/badges/{badge_id}",
+        "id": f"https://zcertify.zairza.co.in/badges/{badge_id}",
         "type": "Assertion",
         "recipient": {
             "type": "email",
@@ -25,7 +25,7 @@ async def issue_badge(request: BadgeIssueRequest) -> BadgeResponse:
             "hashed": True,
             "identity": recipient_hash
         },
-        "badge": str(request.badge_class_url),
+        "badge": str(request.badge_class_url).replace("http://", "https://"),
         "verification": {
             "type": "hosted"
         },
